@@ -3,9 +3,9 @@ using System.Text;
 
 namespace CHAT.Extension_Methods
 {
-    class Extensions
+    static public class Extensions
     {
-        public IPAddress ParseIPAddress(string ip)
+        public static IPAddress ParseIPAddress(this string ip)
         {
             IPAddress iPAddress;
             if (!string.IsNullOrWhiteSpace(ip))
@@ -14,6 +14,21 @@ namespace CHAT.Extension_Methods
                 iPAddress = new IPAddress(data);
             }
             return new IPAddress(new long());
+        }
+
+        public static byte[] EncodingMessageInByte(this string message)
+        {
+           byte[] data = Encoding.Unicode.GetBytes(message);
+            return data;
+        }
+        public static int ParseInt(this string line)
+        {
+            int result;
+            if (int.TryParse(line, out result))
+            {
+                return result;
+            }
+            return result;
         }
     }
 }

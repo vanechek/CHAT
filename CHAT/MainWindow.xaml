@@ -10,8 +10,97 @@
     <Window.DataContext>
         <VM:MainWindowModel/>
     </Window.DataContext>
+    <Window.Resources>
+        <Style x:Key="TextBoxWithHint" TargetType="TextBox">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Name="Border"
+                            BorderBrush="{TemplateBinding BorderBrush}">
+                            <Grid>
+                                <ScrollViewer Margin="1"
+                                              x:Name="PART_ContentHost"
+                                              HorizontalAlignment="Left">
+
+                                </ScrollViewer>
+
+                                <TextBlock 
+                               Background="Transparent"
+                                    x:Name="Hide"
+                                    IsHitTestVisible="False"
+                                    FontSize="{TemplateBinding FontSize}"
+                                    TextAlignment="{TemplateBinding TextAlignment}"
+                                    Text="{TemplateBinding Tag}"
+                                    Foreground="Gray"
+                                    Visibility="Collapsed" 
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="Hide" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="Button" x:Key="BaseTextBox">
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Background" Value="#2b2d33"/>
+        </Style>
+    </Window.Resources>
     
-    <Grid>
-        
+    
+    <Grid Background="{StaticResource Main}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" x:Name="TopPanel"/>
+            <RowDefinition x:Name="Chat" Height="250"/>
+            <RowDefinition x:Name="BottomPanel" Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="0">
+            <TextBox Width="150" Text="{Binding NameBox}" Margin="5" Style="{StaticResource TextBoxWithHint}" Background="#2b2d33" Height="25" Foreground="White"/>
+            <TextBox Text="{Binding IpText}" Width="150" Style="{StaticResource TextBoxWithHint}" Background="#2b2d33" Height="25" Foreground="White"/>
+            <TextBox Text="{Binding PortText}" Width="150" Style="{StaticResource TextBoxWithHint}" Background="#2b2d33" Height="25" Foreground="White"/>
+        </StackPanel>
+        <Button Style="{StaticResource BaseTextBox}" Content="Подключить" Command="{Binding ClickToConnect}" Width="150" VerticalAlignment="Center"/>
+        <Border Grid.ColumnSpan="2" Grid.Row="1">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <ScrollViewer MinWidth="700" Width="725" Height="200" Grid.Row="0" HorizontalScrollBarVisibility="Disabled">
+                    <TextBlock x:Name="MessagePanel" Text="{Binding ChatPanel}" FontSize="16" Foreground="#a4aeb6"/>
+                </ScrollViewer>
+
+                <Border CornerRadius="10" Grid.Row="1" Width="725" Background="{StaticResource Light}">
+                    <TextBox x:Name="SendText" Tag="Написать в чат" Style="{StaticResource TextBoxWithHint}" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+                             Foreground="#a4aeb6" Text="{Binding MessageText}" Width="Auto" Height="40"
+                             BorderThickness="0" Background="Transparent" FontSize="20" VerticalAlignment="Center" Margin="5">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Return" Command="{Binding ClickToSendMessage}" CommandParameter="{Binding ElementName=SendText, Path=Text}"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+
+                </Border>
+            </Grid>
+        </Border>
+        <Button Content="Дисконнект" Style="{StaticResource BaseTextBox}" Width="100" HorizontalAlignment="Right" VerticalAlignment="Center" Command="{Binding ClickToDisconnect}" Grid.Column="1" Grid.Row="2"/>
     </Grid>
 </Window>
